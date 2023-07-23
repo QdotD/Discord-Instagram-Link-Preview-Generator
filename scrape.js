@@ -48,8 +48,14 @@ async function downloadVideo(url) {
 
     // Extract video URL from 'src' attribute
     const videoUrl = await page.evaluate(() => {
-        return document.querySelector('video').getAttribute('src');
+        const videoElement = document.querySelector('video');
+        return videoElement ? videoElement.getAttribute('src') : null;
     });
+
+    if (!videoUrl) {
+        console.log('No video URL found');
+        return;
+    }
 
     console.log(`Downloading video from: ${videoUrl}`);
 
