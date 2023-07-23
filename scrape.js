@@ -16,7 +16,7 @@ async function downloadVideo(url) {
     // Navigate to the page containing the video
     try {
         await Promise.all([
-            page.goto(url, { timeout: 30000 }),
+            page.goto(url, { timeout: 60000 }),
             page.waitForNavigation({ waitUntil: 'networkidle0' }),
         ]);
     } catch (e) {
