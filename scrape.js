@@ -5,7 +5,11 @@ const Discord = require('discord.js');
 require('dotenv').config();
 
 async function downloadVideo(url) {
-    const browser = await puppeteer.launch();
+    // launch command for linux
+    const browser = await puppeteer.launch({
+        executablePath: '/usr/bin/google-chrome-stable',
+    });
+    // const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // Navigate to the page containing the video
