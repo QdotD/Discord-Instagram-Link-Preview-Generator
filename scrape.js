@@ -27,7 +27,21 @@ async function downloadVideo(url) {
     }
 
     // Wait for the video element to be loaded
-    await page.waitForSelector('video');
+    try {
+        // Try to find the video element
+        await page.waitForSelector('video', { timeout: 60000 });
+
+        // Code to process the video goes here...
+    } catch (error) {
+        if (error instanceof puppeteer.errors.TimeoutError) {
+            // If the video element wasn't found within the timeout, send a message
+            console.log('Video element not found');
+            // Or use your bot's messaging function to send a message to the user
+        } else {
+            // If some other error occurred, rethrow it
+            throw error;
+        }
+    }
 
     // Extract video URL from 'src' attribute
     const videoUrl = await page.evaluate(() => {
@@ -66,7 +80,7 @@ function extractInstagramUrl(text) {
 }
 
 // Initialize the client with your intents
-const GUILDS_AND_GUILD_MESSAGES_INTENTS = 
+const GUILDS_AND_GUILD_MESSAGES_INTENTS =
     (1 << 0) +  // GUILDS
     (1 << 9) +   // GUILD_MESSAGES
     (1 << 15); // MESSAGE_CONTENT
