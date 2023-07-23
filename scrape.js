@@ -14,6 +14,21 @@ async function downloadVideo(url) {
     // const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
+    // Enable request interception
+    await page.setRequestInterception(true);
+
+    // Add request listener
+    page.on('request', interceptedRequest => {
+        const url = interceptedRequest.url();
+
+        // If the request URL matches the pattern of a video file
+        if (url.endsWith('.mp4')) {
+            videoUrl = url;
+        }
+
+        interceptedRequest.continue();
+    });
+
     // Navigate to the page containing the video
     try {
         await Promise.all([
