@@ -4,6 +4,11 @@ const fs = require('fs');
 const Discord = require('discord.js');
 require('dotenv').config();
 
+// vars
+let videoUrl = null;
+
+// Puppeteer
+
 async function downloadVideo(url) {
     // launch command for linux
     const browser = await puppeteer.launch({
@@ -102,6 +107,9 @@ async function downloadVideo(url) {
 
     await browser.close();
 }
+
+
+// Discord
 
 function extractInstagramUrl(text) {
     // a basic example that just finds the first URL in the text
