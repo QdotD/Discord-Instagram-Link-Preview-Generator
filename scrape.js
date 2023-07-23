@@ -9,14 +9,16 @@ async function downloadVideo(url) {
     const browser = await puppeteer.launch({
         headless: "new",
         executablePath: '/usr/bin/google-chrome-stable',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     // const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // Navigate to the page containing the video
     try {
-        await page.goto(url, { timeout: 60000 });
+        await Promise.all([
+            page.goto(url, { timeout: 30000 }),
+            page.waitForNavigation({ waitUntil: 'networkidle0' }),
+        ]);
     } catch (e) {
         if (e instanceof puppeteer.errors.TimeoutError) {
             // Handle the timeout how you want (e.g., by skipping this URL, retrying, logging, etc.)
