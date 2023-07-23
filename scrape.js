@@ -22,7 +22,7 @@ async function downloadVideo(url) {
         const url = interceptedRequest.url();
 
         // If the request URL matches the pattern of a video file
-        if (url.endsWith('.mp4')) {
+        if (url.startsWith('https://scontent')) {
             videoUrl = url;
         }
 
