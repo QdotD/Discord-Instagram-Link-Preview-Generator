@@ -16,7 +16,7 @@ async function downloadVideo(url) {
 
     // Navigate to the page containing the video
     try {
-        await page.goto(url, { timeout: 30000 });
+        await page.goto(url, { timeout: 60000 });
     } catch (e) {
         if (e instanceof puppeteer.errors.TimeoutError) {
             // Handle the timeout how you want (e.g., by skipping this URL, retrying, logging, etc.)
@@ -114,6 +114,7 @@ client.on('messageCreate', async message => {
                 }]
             });
             console.log('Video uploaded successfully to Discord.');
+            fs.unlinkSync('video.mp4');
         } else {
             console.error('Target channel is not a text channel.');
         }
