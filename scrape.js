@@ -82,7 +82,13 @@ async function downloadVideo(url) {
     });
 
     // Create a write stream to save the video to a file
-    const writer = fs.createWriteStream('video.mp4');
+    const path = 'video.mp4';
+    const writer = fs.createWriteStream(path);
+
+    // Handle errors when creating the write stream
+    writer.on('error', (err) => {
+        console.error(`Error occurred while writing to the file: ${err}`);
+    });
 
     // Pipe the video stream into the write stream
     response.data.pipe(writer);
@@ -130,15 +136,26 @@ client.on('messageCreate', async message => {
 
         // Then send the video to the same channel the message was in
         if (message.channel.type === 0) {
-            await message.channel.send({
-                content: `Can you believe ${message.author} just tried to make you click a link? Here's the video:`,
-                files: [{
-                    attachment: 'video.mp4',
-                    name: 'video.mp4'
-                }]
-            });
-            console.log('Video uploaded successfully to Discord.');
-            fs.unlinkSync('video.mp4');
+            try {
+                await message.channel.send({
+                    content: `Can you believe ${message.author} just tried to make you click a link? Here's the video:`,
+                    files: [{
+                        attachment: 'video.mp4',
+                        name: 'video.mp4'
+                    }]
+                });
+                console.log('Video uploaded successfully to Discord.');
+            } catch (error) {
+                console.error('Error occurred while reading from the file: ' + error);
+            }
+
+            if (fs.existsSync('video.mp4')) {
+                try {
+                    fs.unlinkSync('video.mp4');
+                } catch (error) {
+                    console.error('Error occurred while deleting the file: ' + error);
+                }
+            }
         } else {
             console.error('Target channel is not a text channel.');
         }
