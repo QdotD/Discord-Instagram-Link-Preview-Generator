@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const axios = require('axios');
 const fs = require('fs');
 const Discord = require('discord.js');
@@ -7,7 +7,7 @@ require('dotenv').config();
 async function downloadVideo(url) {
     // launch command for linux
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         executablePath: '/usr/bin/google-chrome-stable',
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
