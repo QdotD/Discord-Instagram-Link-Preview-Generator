@@ -22,23 +22,26 @@ async function downloadVideo(url) {
     // Enable request interception
     await page.setRequestInterception(true);
 
+    // Define the pattern to match against request URLs.
+    const videoRequestPattern = 'https://scontent';
+
     // Add request listener
     page.on('request', interceptedRequest => {
         const url = interceptedRequest.url();
 
         // If the request URL matches the pattern of a video file
-        if (url.startsWith('https://scontent')) {
+        if (url.startsWith(videoRequestPattern)) {
             videoUrl = url;
         }
 
         interceptedRequest.continue();
     });
 
-    // Navigate to the page containing the video
     try {
+        // Navigate to the page containing the video
         await Promise.all([
             page.goto(url, { timeout: 60000 }),
-            page.waitForNavigation({ waitUntil: 'networkidle0' }),
+            page.waitForResponse(response => response.url().startsWith(videoRequestPattern)),
         ]);
     } catch (e) {
         if (e instanceof puppeteer.errors.TimeoutError) {
