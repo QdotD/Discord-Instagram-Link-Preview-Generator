@@ -62,10 +62,10 @@ async function downloadVideo(url) {
     }
 
     // Extract video URL from 'src' attribute
-    const videoUrl = await page.evaluate(() => {
-        const videoElement = document.querySelector('video');
-        return videoElement ? videoElement.getAttribute('src') : null;
-    });
+    // const videoUrl = await page.evaluate(() => {
+    //     const videoElement = document.querySelector('video');
+    //     return videoElement ? videoElement.getAttribute('src') : null;
+    // });
 
     if (!videoUrl) {
         console.log('No video URL found');
