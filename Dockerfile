@@ -1,28 +1,31 @@
-# Base Docker image with Node.js
-FROM node:slim AS app
+# Use an official Node runtime as the parent image
+FROM node:14
 
-# We don't need the standalone Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+# Set the working directory in the container to /app
+WORKDIR /app
 
-# Install Google Chrome Stable and fonts
-# Note: this installs the necessary libs to make the browser work with Puppeteer.
-RUN apt-get update && apt-get install curl gnupg -y \
-  && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-  && apt-get update \
-  && apt-get install google-chrome-stable -y --no-install-recommends \
-  && rm -rf /var/lib/apt/lists/*
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
+# Install any needed packages specified in package.json
 RUN npm install
 
-# Bundle app source
+# Install Chromium
+RUN apt-get update && apt-get install -y \
+  chromium \
+  --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables for Puppeteer
+# Make sure Puppeteer can find the installed Chromium package
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium
+
+# Copy the current directory contents into the container at /app
 COPY . .
 
-# Your application's main script
-CMD [ "node", "scrape.js" ]
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run the app when the container launches
+CMD ["npm", "start"]
