@@ -7,6 +7,7 @@ require('dotenv').config();
 async function downloadVideo(url) {
     // launch command for linux
     const browser = await puppeteer.launch({
+        headless: 'new',
         executablePath: '/usr/bin/chromium', // Change path to Chromium
         args: [ // Additional arguments for running Puppeteer in Docker
             '--no-sandbox',
@@ -81,7 +82,6 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
     console.log(`Received a message from ${message.author.tag}: ${message.content}`);
-    console.log('message: ' + message);
 
     // Check if the message is not from a bot and contains an Instagram URL
     if (!message.author.bot && message.content.includes('instagram.com')) {
