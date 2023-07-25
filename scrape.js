@@ -7,7 +7,11 @@ require('dotenv').config();
 async function downloadVideo(url) {
     // launch command for linux
     const browser = await puppeteer.launch({
-        executablePath: '/usr/bin/google-chrome-stable',
+        executablePath: '/usr/bin/chromium', // Change path to Chromium
+        args: [ // Additional arguments for running Puppeteer in Docker
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+        ],
     });
     // const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -64,7 +68,7 @@ function extractInstagramUrl(text) {
 }
 
 // Initialize the client with your intents
-const GUILDS_AND_GUILD_MESSAGES_INTENTS = 
+const GUILDS_AND_GUILD_MESSAGES_INTENTS =
     (1 << 0) +  // GUILDS
     (1 << 9) +   // GUILD_MESSAGES
     (1 << 15); // MESSAGE_CONTENT
